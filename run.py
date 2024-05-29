@@ -1,95 +1,100 @@
-#Project Imports
+#Importing Project Dependencies
 import random
 
-#Lists and Dictionaries to be Used Throughout
-ship_length = [2,3,4,5]
+#Declaring Project Lists & Dictionaries 
+ship_length_list = [2,3,3,4,5]  
 
-user_board = [[" "] * 8 for i in range(8)] #Decided on size of the player board, TODO add variable board size
-comp_board = [[" "] * 8 for i in range(8)] #Decided on size of the computer board, TODO add variable board size
+user_board = [[" "] * 8 for i in range(8)]
+comp_board = [[" "] * 8 for i in range(8)]
 
 user_guess_board = [[" "] * 8 for i in range(8)]
 comp_guess_board = [[" "] * 8 for i in range(8)]
 
-nums_as_letters = {'A':0, 'B':1, 'C':2, 'D':3, 'E':4, 'F':5, 'G':6, 'H':7} #Dictionary to convert text inputs to numerical for move tracking
+letters_to_nums = {'A':0, 'B':1, 'C':2, 'D':3, 'E':4, 'F':5, 'G':6, 'H':7}
 
-#Creating Generic Board Layout
+#Build Basic Board Structure
 def create_board(board):
-    print("    A  B  C  D  E  F  G  H")
-    print("============================")
-    row_num = 1
+    print("   A  B  C  D  E  F  G  H")
+    print(" =========================")
+    row_number = 1
     for row in board:
-        print("%d |%s |" % (row_num, " |".join(row)))
-        row_num += 1
+        print("%d |%s |" % (row_number, " |".join(row)))
+        row_number += 1
 
-#Start Placing Ships on the Board
+#Place Ships on the Boards
 def launch_ships(board):
-    #Move through all ships
-    for ships in ship_length:
+    #Loop Through Length of Ships
+    for ship_length in ship_length_list:
+        #Loop Until Ship Fits and Doesn't Overlap
         while True:
             if board == comp_board:
                 orientation, row, column = random.choice(["H", "V"]), random.randint(0,7), random.randint(0,7)
-                if check_space(ships, row, column, orientation) == False:
-                    #Places the Ship
-                    if orientation =="H":
-                        for i in range(column, column + ships):
-                            board[row][i] = "X"
-                    else:
-                        for i in range(row, row + ships):
-                            board[i][column] = "X"
-                    break
-            else:
-                place_ship = True
-                print(f"You are placing your ship of length {str(ships)}")
-                row, column, orientation = user_input(place_ship) #Placeholder Function - tbc
-                if check_space(ships, row, column, orientation):
-                    if ship_overlap(board, row, column, orientation, ships) == False:
-                        #Places the Ship
-                        if orientation =="H":
-                            for i in range(column, column + ships):
+                if check_space(ship_length, row, column, orientation):
+                    #Check if Ship Overlaps
+                    if ship_collisions(board, row, column, orientation, ship_length) == False:
+                        #Place Ship
+                        if orientation == "H":
+                            for i in range(column, column + ship_length):
                                 board[row][i] = "X"
                         else:
-                            for i in range(row, row + ships):
+                            for i in range(row, row + ship_length):
                                 board[i][column] = "X"
-                        create_board(user_board)
                         break
+            else:
+                place_ship = True
+                print('Place the ship with a length of ' + str(ship_length))
+                row, column, orientation = user_input(place_ship)
+                if check_space(ship_length, row, column, orientation):
+                    #Check if Ship Overlaps
+                        if ship_collisions(board, row, column, orientation, ship_length) == False:
+                            #Place Ship
+                            if orientation == "H":
+                                for i in range(column, column + ship_length):
+                                    board[row][i] = "X"
+                            else:
+                                for i in range(row, row + ship_length):
+                                    board[i][column] = "X"
+                            create_board(user_board)
+                            break 
 
-#Ensure that Ships with on the Board
-def check_space(ship_length, row, column, orientation):
+#Check that the Ship fits on the Board
+def check_space(SHIP_LENGTH, row, column, orientation):
     if orientation == "H":
-        if column + ship_length > 8:
+        if column + SHIP_LENGTH > 8:
             return False
         else:
             return True
     else:
-        if row + ship_length > 8:
+        if row + SHIP_LENGTH > 8:
             return False
         else:
             return True
 
-#Ensure that Ships fo not Overlap
-def ship_overlap(board, row, column, orientation, ships):
+#Ensure that the Ships do not Overlap Each Other
+def ship_collisions(board, row, column, orientation, ship_length):
     if orientation == "H":
-        for i in range(column, column + ships):
+        for i in range(column, column + ship_length):
             if board[row][i] == "X":
                 return True
     else:
-        for i in range((row, row + ships)):
+        for i in range(row, row + ship_length):
             if board[i][column] == "X":
                 return True
+    return False
 
 #Handling User Inputs
 def user_input(place_ship):
     if place_ship == True:
         while True:
             try: 
-                orientation = input("Please select an Orientation (H or V): \n").upper() #Converting to upper Case to prevent input errors
+                orientation = input("Please select an Orientation (H or V): \n").upper() #Converting to Uppercase to Prevent Input Errors
                 if orientation == "H" or orientation == "V":
                     break
             except TypeError:
-                print('Please select a valid Orientation: H or V \n')
+                print('Please select a valid Orientation H or V \n')
         while True:
             try: 
-                row = input("Please select which row you would like to place your ship (1 - 8): \n")
+                row = input("Please select a row to place your ship (1 - 8): \n")
                 if row in '12345678':
                     row = int(row) - 1
                     break
@@ -97,17 +102,17 @@ def user_input(place_ship):
                 print('Please select a valid row (1 - 8) \n')
         while True:
             try: 
-                column = input("Please select which row you would like to place your ship (A - H): \n").upper() #Converting to upper Case to prevent input errors
+                column = input("Please select a column to place your ship (A - H): \n").upper() #Converting to Uppercase to Prevent Input Errors
                 if column in 'ABCDEFGH':
-                    column = nums_as_letters[column]
+                    column = letters_to_nums[column]
                     break
             except KeyError:
-                print('Please select a valid row (A - H) \n')
+                print('Please select a valid Column (A - H) \n')
         return row, column, orientation 
     else:
         while True:
             try: 
-                row = input("Please select which row you would like to place your ship (1 - 8): \n")
+                row = input("Please select a row to place your ship (1 - 8): \n")
                 if row in '12345678':
                     row = int(row) - 1
                     break
@@ -115,19 +120,68 @@ def user_input(place_ship):
                 print('Please select a valid row (1 - 8) \n')
         while True:
             try: 
-                column = input("Please select which row you would like to place your ship (A - H): \n").upper() #Converting to upper Case to prevent input errors
+                column = input("Please select a column to place your ship (A - H): \n").upper() #Converting to Uppercase to Prevent Input Errors
                 if column in 'ABCDEFGH':
-                    column = nums_as_letters[column]
+                    column = letters_to_nums[column]
                     break
             except KeyError:
-                print('Please select a valid row (A - H) \n')
-        return row, column     
+                print('Please select a valid Column (A - H) \n')
+        return row, column        
 
-#Monitor if Ships Have Been Hit
-def hit_counter(board):
+#Check When All SHips Hit
+def count_hit_ships(board):
     count = 0
     for row in board:
         for column in row:
             if column == "X":
                 count += 1
     return count
+
+#Turn Manager - User & Computer
+def turn(board):
+    if board == user_guess_board:
+        row, column = user_input(user_guess_board)
+        if board[row][column] == "-":
+            turn(board)
+        elif board[row][column] == "X":
+            turn(board)
+        elif comp_board[row][column] == "X":
+            board[row][column] = "X"
+        else:
+            board[row][column] = "-"
+    else:
+        row, column = random.randint(0,7), random.randint(0,7)
+        if board[row][column] == "-":
+            turn(board)
+        elif board[row][column] == "X":
+            turn(board)
+        elif user_board[row][column] == "X":
+            board[row][column] = "X"
+        else:
+            board[row][column] = "-"
+
+#Print Boards Each Turn
+launch_ships(comp_board)
+create_board(comp_board)
+
+create_board(user_board)
+launch_ships(user_board)
+        
+while True:
+    #Player Turn Handling
+    while True:
+        print('Guess a battleship location /n')
+        create_board(user_guess_board)
+        turn(user_guess_board)
+        break
+    if count_hit_ships(user_guess_board) == 17:
+        print("You win!")
+        break   
+    #computer turn
+    while True:
+        turn(comp_guess_board)
+        break           
+    create_board(comp_guess_board)   
+    if count_hit_ships(comp_guess_board) == 17:
+        print("Sorry, the computer won.")
+        break
