@@ -122,3 +122,12 @@ def user_input(place_ship):
             except KeyError:
                 print('Please select a valid row (A - H) \n')
         return row, column     
+
+#Monitor if Ships Have Been Hit
+def hit_counter(board):
+    count = 0
+    for row in board:
+        for column in row:
+            if column == "X":
+                count += 1
+    return count
