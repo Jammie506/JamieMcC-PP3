@@ -162,7 +162,7 @@ def turn(board):
 
 #Print Boards Each Turn
 launch_ships(comp_board)
-create_board(comp_board)
+#create_board(comp_board)
 
 create_board(user_board)
 launch_ships(user_board)
@@ -170,7 +170,7 @@ launch_ships(user_board)
 while True:
     #Player Turn Handling
     while True:
-        print('Guess a battleship location /n')
+        print('Guess a battleship location \n')
         create_board(user_guess_board)
         turn(user_guess_board)
         break
