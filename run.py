@@ -84,6 +84,7 @@ def ship_collisions(board, row, column, orientation, ship_length):
 
 #Handling User Inputs
 def user_input(place_ship):
+    #Placing User Ships on the Board
     if place_ship == True:
         while True:
             try: 
@@ -110,9 +111,10 @@ def user_input(place_ship):
                 print('Please select a valid Column (A - H) \n')
         return row, column, orientation 
     else:
+        #Guessing Computer Ship Locations
         while True:
             try: 
-                row = input("Please select a row to place your ship (1 - 8): \n")
+                row = input("Select a row to target an Enemy Ship (1 - 8): \n")
                 if row in '12345678':
                     row = int(row) - 1
                     break
@@ -120,7 +122,7 @@ def user_input(place_ship):
                 print('Please select a valid row (1 - 8) \n')
         while True:
             try: 
-                column = input("Please select a column to place your ship (A - H): \n").upper() #Converting to Uppercase to Prevent Input Errors
+                column = input("Select a column to target an Enemy Ship (A - H): \n").upper() #Converting to Uppercase to Prevent Input Errors
                 if column in 'ABCDEFGH':
                     column = letters_to_nums[column]
                     break
