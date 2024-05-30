@@ -172,7 +172,9 @@ launch_ships(user_board)
 while True:
     #Player Turn Handling
     while True:
-        print('Guess a battleship location \n')
+        print('                           ')
+        print('===========================')
+        print('Guess a battleship location')
         create_board(user_guess_board)
         turn(user_guess_board)
         break
