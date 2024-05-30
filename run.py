@@ -174,7 +174,9 @@ while True:
     while True:
         print('                           ')
         print('===========================')
-        print('Guess a battleship location')
+        print('  Guess An Enemy Location  ')
+        print('===========================')
+        print('                           ')
         create_board(user_guess_board)
         turn(user_guess_board)
         break
